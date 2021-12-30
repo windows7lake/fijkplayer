@@ -141,6 +141,10 @@ class FijkPlugin {
     return Future.value();
   }
 
+  static Future<void> preload(String url) {
+    return _channel.invokeMethod("preload", <String, dynamic>{'url': url});
+  }
+
   static Future<void> _setLogLevel(int level) {
     return _channel.invokeMethod("logLevel", <String, dynamic>{'level': level});
   }

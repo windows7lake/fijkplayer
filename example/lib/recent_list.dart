@@ -73,6 +73,15 @@ const List<MediaUrl> samples = [
       title: "bipbop advanced 22.050Hz stereo @ 40 kbps",
       url:
           "http://devimages.apple.com.edgekey.net/streaming/examples/bipbop_16x9/gear0/prog_index.m3u8"),
+  MediaUrl(
+      title: "aac 1",
+      url: "http://media.yoosoul.com/sv/4ece5010-17dd802f4bf/4ece5010-17dd802f4bf.aac"),
+  MediaUrl(
+      title: "aac 2",
+      url: "http://media.yoosoul.com/sv/3408e703-17dd8035076/3408e703-17dd8035076.aac"),
+  MediaUrl(
+      title: "aac 3",
+      url: "http://media.yoosoul.com/sv/3bf61e16-17dd8041d15/3bf61e16-17dd8041d15.aac"),
 ];
 
 class SamplesScreen extends StatelessWidget {

@@ -23,6 +23,7 @@
 #import "FijkPlugin.h"
 #import "FijkPlayer.h"
 #import "FijkQueuingEventSink.h"
+#import "FijkHttpCache.h"
 
 #import <AVKit/AVKit.h>
 #import <Flutter/Flutter.h>
@@ -67,6 +68,8 @@ static FijkPlugin *_instance = nil;
     int64_t vid = [[registrar textures] registerTexture:player];
     [player shutdown];
     [[registrar textures] unregisterTexture:vid];
+    
+    [FijkHttpCache defaultStore];
 }
 
 + (FijkPlugin *)singleInstance {
@@ -236,6 +239,10 @@ static FijkPlugin *_instance = nil;
         result(nil);
     } else if ([@"onUnload" isEqualToString:call.method]) {
         _eventListening = NO;
+        result(nil);
+    } else if ([@"preload" isEqualToString:call.method]) {
+        NSString *url = argsMap[@"url"];
+        [[FijkHttpCache defaultStore] preload:url];
         result(nil);
     } else {
         result(FlutterMethodNotImplemented);

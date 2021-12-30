@@ -24,7 +24,9 @@
 #import "FijkHostOption.h"
 #import "FijkPlugin.h"
 #import "FijkQueuingEventSink.h"
+#import "FijkHttpCache.h"
 
+#import <AVFoundation/AVFoundation.h>
 #import <Flutter/Flutter.h>
 #import <Foundation/Foundation.h>
 #import <IJKMediaPlayer/IJKMediaPlayer.h>
@@ -448,6 +450,57 @@ static int renderType = 0;
     }];
 }
 
+- (void)setupCommandCenter {
+    NSLog(@"setupCommandCenter");
+    MPRemoteCommandCenter *commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
+    [commandCenter.playCommand removeTarget:self];
+    [commandCenter.pauseCommand removeTarget:self];
+    
+    // Ban button: pre and next
+    MPRemoteCommand *previousTrackCommand = commandCenter.previousTrackCommand;
+    previousTrackCommand.enabled = NO;
+    MPRemoteCommand *nextTrackCommand = commandCenter.nextTrackCommand;
+    nextTrackCommand.enabled = NO;
+    
+    // Play when locked
+    MPRemoteCommand *playCommand = commandCenter.playCommand;
+    playCommand.enabled = YES;
+    [playCommand addTargetWithHandler:^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent * _Nonnull event) {
+        NSLog(@"Locked playCommand");
+        if (!self->_ijkMediaPlayer.isPlaying) {
+            [self->_ijkMediaPlayer start];
+        }
+        return MPRemoteCommandHandlerStatusSuccess;
+    }];
+    MPRemoteCommand *pauseCommand = commandCenter.pauseCommand;
+    pauseCommand.enabled = YES;
+    [pauseCommand addTargetWithHandler:^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent * _Nonnull event) {
+        NSLog(@"Locked pauseCommand");
+        if (self->_ijkMediaPlayer.isPlaying) {
+            [self->_ijkMediaPlayer pause];
+        }
+        return MPRemoteCommandHandlerStatusSuccess;
+    }];
+    
+    // control for play and pause
+    MPRemoteCommand *playPauseCommand = commandCenter.togglePlayPauseCommand;
+    playPauseCommand.enabled = YES;
+    [playPauseCommand addTargetWithHandler:^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent * _Nonnull event) {
+        NSLog(@"playPauseCommand");
+        if (self->_ijkMediaPlayer.isPlaying) {
+            [self->_ijkMediaPlayer pause];
+        } else {
+            [self->_ijkMediaPlayer start];
+        }
+        return MPRemoteCommandHandlerStatusSuccess;
+    }];
+    
+    NSMutableDictionary * nowPlayingInfoDict = [@{MPMediaItemPropertyTitle: @"title",
+                                                  MPNowPlayingInfoPropertyPlaybackRate: @1,
+    } mutableCopy];
+    [MPNowPlayingInfoCenter defaultCenter].nowPlayingInfo = nowPlayingInfoDict;
+}
+
 - (void)handleMethodCall:(FlutterMethodCall *)call
                   result:(FlutterResult)result {
 
@@ -484,6 +537,7 @@ static int renderType = 0;
         [self setOptions:argsMap];
         result(nil);
     } else if ([@"setDataSource" isEqualToString:call.method]) {
+        [self setupCommandCenter];
         NSString *url = argsMap[@"url"];
         NSURL *aUrl =
             [NSURL URLWithString:[url stringByAddingPercentEscapesUsingEncoding:
@@ -517,7 +571,8 @@ static int renderType = 0;
                                                    stringByAppendingString:url]
                                        details:nil]);
         } else {
-            [_ijkMediaPlayer setDataSource:url];
+            NSString *proxyUrl = [[FijkHttpCache defaultStore] getProxyUrl:url];
+            [_ijkMediaPlayer setDataSource:proxyUrl];
             [self handleEvent:IJKMPET_PLAYBACK_STATE_CHANGED
                       andArg1:initialized
                       andArg2:-1
