@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <KTVHTTPCache.h>
+#import <KTVHTTPCache/KTVHCDataLoader.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

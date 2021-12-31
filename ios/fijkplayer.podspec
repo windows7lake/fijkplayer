@@ -29,7 +29,7 @@ Flutter plugin for ijkplayer
   # s.use_frameworks!
 
   s.dependency 'BIJKPlayer', '~> 0.7.16'
-  s.dependency 'KTVHTTPCache', '~> 2.0.0'
+  s.dependency 'KTVHTTPCache', '~> 2.0.1'
 
   s.ios.deployment_target = '8.0'
 end
