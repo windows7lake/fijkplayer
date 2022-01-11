@@ -117,6 +117,7 @@ class FijkFit {
 class FijkView extends StatefulWidget {
   FijkView({
     required this.player,
+    this.playerColor = Colors.transparent,
     this.width,
     this.height,
     this.fit = FijkFit.contain,
@@ -131,6 +132,9 @@ class FijkView extends StatefulWidget {
   /// The player that need display video by this [FijkView].
   /// Will be passed to [panelBuilder].
   final FijkPlayer player;
+
+  /// background color for player view
+  final Color playerColor;
 
   /// builder to build panel Widget
   final FijkPanelWidgetBuilder panelBuilder;
@@ -273,6 +277,7 @@ class _FijkViewState extends State<FijkView> {
             fullScreen: true,
             cover: widget.cover,
             data: _fijkData,
+            bgColor: widget.playerColor,
           ),
         );
       },
@@ -335,6 +340,7 @@ class _FijkViewState extends State<FijkView> {
               fullScreen: false,
               cover: widget.cover,
               data: _fijkData,
+              bgColor: widget.playerColor,
             ),
     );
   }
@@ -346,12 +352,14 @@ class _InnerFijkView extends StatefulWidget {
     required this.fullScreen,
     required this.cover,
     required this.data,
+    required this.bgColor,
   });
 
   final _FijkViewState fijkViewState;
   final bool fullScreen;
   final ImageProvider? cover;
   final FijkData data;
+  final Color bgColor;
 
   @override
   __InnerFijkViewState createState() => __InnerFijkViewState();
@@ -547,7 +555,7 @@ class __InnerFijkViewState extends State<_InnerFijkView> {
         Positioned.fromRect(
             rect: pos,
             child: Container(
-              color: Color(0xFF000000),
+              color: widget.bgColor,
               child: buildTexture(),
             )),
       ];

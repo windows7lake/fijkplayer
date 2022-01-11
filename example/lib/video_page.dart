@@ -42,7 +42,10 @@ class _VideoScreenState extends State<VideoScreen> {
         child: Center(
           child: FijkView(
             player: player,
-            panelBuilder: fijkPanel2Builder(snapShot: true),
+            // panelBuilder: fijkPanel2Builder(snapShot: true),
+            panelBuilder: (player, data, context, viewSize, rect) {
+              return const SizedBox(width: 0, height: 0);
+            },
             fsFit: FijkFit.fill,
             // panelBuilder: simplestUI,
             // panelBuilder: (FijkPlayer player, BuildContext context,
