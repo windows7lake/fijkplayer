@@ -283,6 +283,7 @@ class FijkPlayer extends ChangeNotifier implements ValueListenable<FijkValue> {
   /// If both [autoPlay] and [showCover] are true, [showCover] will be ignored.
   Future<void> setDataSource(
     String path, {
+    String title = "",
     bool autoPlay = false,
     bool showCover = false,
   }) async {
@@ -300,8 +301,8 @@ class FijkPlayer extends ChangeNotifier implements ValueListenable<FijkValue> {
       try {
         FijkLog.i("$this invoke setDataSource $path");
         _dataSource = path;
-        await _channel
-            .invokeMethod("setDataSource", <String, dynamic>{'url': path});
+        await _channel.invokeMethod(
+            "setDataSource", <String, dynamic>{'url': path, 'title': title});
       } on PlatformException catch (e) {
         return _errorListener(e);
       }

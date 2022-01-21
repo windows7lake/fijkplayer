@@ -450,7 +450,7 @@ static int renderType = 0;
     }];
 }
 
-- (void)setupCommandCenter {
+- (void)setupCommandCenter:(NSString *)title {
     NSLog(@"setupCommandCenter");
     MPRemoteCommandCenter *commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
     [commandCenter.playCommand removeTarget:self];
@@ -495,7 +495,7 @@ static int renderType = 0;
         return MPRemoteCommandHandlerStatusSuccess;
     }];
     
-    NSMutableDictionary * nowPlayingInfoDict = [@{MPMediaItemPropertyTitle: @"title",
+    NSMutableDictionary * nowPlayingInfoDict = [@{MPMediaItemPropertyTitle: title,
                                                   MPNowPlayingInfoPropertyPlaybackRate: @1,
     } mutableCopy];
     [MPNowPlayingInfoCenter defaultCenter].nowPlayingInfo = nowPlayingInfoDict;
@@ -537,7 +537,8 @@ static int renderType = 0;
         [self setOptions:argsMap];
         result(nil);
     } else if ([@"setDataSource" isEqualToString:call.method]) {
-        [self setupCommandCenter];
+        NSString *title = argsMap[@"title"];
+        [self setupCommandCenter:title];
         NSString *url = argsMap[@"url"];
         NSURL *aUrl =
             [NSURL URLWithString:[url stringByAddingPercentEscapesUsingEncoding:
