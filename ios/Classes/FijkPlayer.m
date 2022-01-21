@@ -537,8 +537,6 @@ static int renderType = 0;
         [self setOptions:argsMap];
         result(nil);
     } else if ([@"setDataSource" isEqualToString:call.method]) {
-        NSString *title = argsMap[@"title"];
-        [self setupCommandCenter:title];
         NSString *url = argsMap[@"url"];
         NSURL *aUrl =
             [NSURL URLWithString:[url stringByAddingPercentEscapesUsingEncoding:
@@ -580,6 +578,9 @@ static int renderType = 0;
                      andExtra:nil];
             result(nil);
         }
+    } else if ([@"setNotification" isEqualToString:call.method]) {
+        NSString *title = argsMap[@"title"];
+        [self setupCommandCenter:title];
     } else if ([@"prepareAsync" isEqualToString:call.method]) {
         [self setup];
         [_ijkMediaPlayer prepareAsync];
