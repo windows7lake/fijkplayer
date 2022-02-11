@@ -570,8 +570,8 @@ static int renderType = 0;
                                                    stringByAppendingString:url]
                                        details:nil]);
         } else {
-            NSString *proxyUrl = [[FijkHttpCache defaultStore] getProxyUrl:url];
-            [_ijkMediaPlayer setDataSource:proxyUrl];
+//            NSString *proxyUrl = [[FijkHttpCache defaultStore] getProxyUrl:url];
+            [_ijkMediaPlayer setDataSource:url];
             [self handleEvent:IJKMPET_PLAYBACK_STATE_CHANGED
                       andArg1:initialized
                       andArg2:-1

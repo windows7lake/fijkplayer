@@ -69,7 +69,7 @@ static FijkPlugin *_instance = nil;
     [player shutdown];
     [[registrar textures] unregisterTexture:vid];
     
-    [FijkHttpCache defaultStore];
+//    [FijkHttpCache defaultStore];
 }
 
 + (FijkPlugin *)singleInstance {
